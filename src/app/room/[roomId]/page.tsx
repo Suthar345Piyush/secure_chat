@@ -3,7 +3,7 @@
 //Next js dynamic routes 
 
 import { useParams } from "next/navigation"
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 
 function formatTimeRemaining(seconds : number) {
@@ -19,6 +19,13 @@ const Page = () => {
 
    const [copyStatus , setCopyStatus] = useState("COPY");
    const [timeRemaining , setTimeRemaining] = useState<number | null>(210);
+   const [input , setInput] = useState("");
+
+   // reference of the input  
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+
 
 
 
@@ -84,10 +91,19 @@ const Page = () => {
               <div className="flex-1 relative group">
                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-red-500 animate-pulse">{">"}</span>
 
-                 <input autoFocus type="text" className="w-full bg-black border border-zinc-800 focus:border-zinc-700 focus:outline-none transition-colors text-zinc-100 placeholder:text-zinc-700 py-3 pl-8 pr-4 text-sm"/>
-
+                 <input 
+                  autoFocus
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                     
+                  }}
+                  type="text" className="w-full bg-black border border-zinc-800 focus:border-zinc-700 focus:outline-none transition-colors text-zinc-100 placeholder:text-zinc-700 py-3 pl-8 pr-4 text-sm"/>
 
               </div>
+
+              <button className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:text-zinc-200 disabled:opacity-50 transition-all disabled:cursor-not-allowed cursor-pointer">SEND</button>
+
             </div>
            </div>
        
