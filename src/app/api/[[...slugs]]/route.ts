@@ -20,7 +20,7 @@ const rooms = new Elysia({prefix : "/room"}).post("/create" , async () => {
    });
 
    //logic for room self destruction,this is provided by redis itself  
-
+ 
     // ttl_seconds = time to leave in seconds 
 
    await redis.expire(`meta:${roomId}` , ROOM_TTL_SECONDS);
