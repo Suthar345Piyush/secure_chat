@@ -2,7 +2,6 @@
 
 import { Redis } from "@upstash/redis";
 
-
-//this will take the env credentials and establish connection b/w app and redis  
+//this will take the env credentials and establish connection b/w the app & redis  
 
 export const redis  = Redis.fromEnv();
