@@ -60,7 +60,7 @@ const messages = new Elysia({prefix : "/messages"}).use(authMiddleware).post("/"
      await realtime.channel(roomId).emit("chat.message" , message);
 
 
-     //housekeeping  
+     //housekeeping  , ttl = time to leave 
 
      const remaining = await redis.ttl(`meta:${roomId}`);
 

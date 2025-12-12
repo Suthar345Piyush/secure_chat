@@ -1,6 +1,7 @@
 "use client"
 
 
+import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
@@ -19,32 +20,10 @@ const generateUserName = () => {
 
 
 export default function Home() {
-   const [username , setUsername] = useState("");
+   const {username} = useUsername();
    const router = useRouter();  
 
 
-
-     // username generation logic 
-
-   useEffect(() => {
-       const main = () => {
-         const stored = localStorage.getItem(STORAGE_KEY);
-
-
-         if(stored) {
-           setUsername(stored);
-           return;
-          }
-
-          const generated = generateUserName()
-          localStorage.setItem(STORAGE_KEY , generated);
-          
-         setUsername(generated);
-          
-       }
-
-       main()
-   } , []);
 
    const {mutate : createRoom} = useMutation({
       mutationFn : async () => {
@@ -55,13 +34,6 @@ export default function Home() {
          }
       }
    });
-
-
-
-
-  
-
-
 
 
   return (

@@ -1,5 +1,8 @@
 "use client"
 
+import { useUsername } from "@/hooks/use-username";
+import { client } from "@/lib/client";
+import { useMutation, useQuery } from "@tanstack/react-query";
 //Next js dynamic routes 
 
 import { useParams } from "next/navigation"
@@ -20,12 +23,40 @@ const Page = () => {
    const [copyStatus , setCopyStatus] = useState("COPY");
    const [timeRemaining , setTimeRemaining] = useState<number | null>(210);
    const [input , setInput] = useState("");
+   const {username} = useUsername();
+
+
+
+   // this query function , will run when component renders 
+   // to extracting data , destructring the data on the top 
+
+    const {data : messages} =  useQuery({
+        queryKey : ["messages" , roomId],
+        queryFn : async() => {
+           const res = await client.messages.get({
+              query : {roomId}
+           })
+
+           return res.data;
+        },
+     })
+
+   
 
    // reference of the input  
 
     const inputRef = useRef<HTMLInputElement>(null);
 
 
+    // isPending from react query  
+
+    const { mutate : sendMessage , isPending} = useMutation({
+       mutationFn : async({text} : {
+         text : string
+       }) => {
+          await client.messages.post({sender : username , text} , {query : {roomId}})
+       }
+    });
 
 
 
@@ -97,15 +128,21 @@ const Page = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
                      if(e.key === "Enter" && input.trim()) {
+                       sendMessage({
+                          text : input
+                       })
                        inputRef.current?.focus()
                      }
                   }}
-                  placeholder="Enter your message..."
+                  placeholder="Type your message..."
                   type="text" className="w-full bg-black border border-zinc-800 focus:border-zinc-700 focus:outline-none transition-colors text-zinc-100 placeholder:text-zinc-700 py-3 pl-8 pr-4 text-sm"/>
 
               </div>
 
-              <button className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:text-zinc-200 disabled:opacity-50 transition-all disabled:cursor-not-allowed cursor-pointer">SEND</button>
+              <button onClick={() => {sendMessage({text : input})
+                   inputRef.current?.focus()}} 
+                   disabled={!input.trim() || isPending}
+                   className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:text-zinc-200 disabled:opacity-50 transition-all disabled:cursor-not-allowed cursor-pointer">SEND</button>
 
             </div>
            </div>
