@@ -6,8 +6,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 //Next js dynamic routes 
 
 import { useParams } from "next/navigation"
-import {format} from "date-fns"
+//date functions untility functions to work with dates 
+
+import {format} from "date-fns"   
 import { useRef, useState } from "react";
+
+import { useRealtime } from "@/lib/realtime-client";
 
 
 
@@ -59,6 +63,18 @@ const Page = () => {
           await client.messages.post({sender : username , text} , {query : {roomId}})
        }
     });
+
+    useRealtime({
+       channels : [roomId],
+       events : ["chat.message" , "chat.destroy"],
+       onData : ({event}) => {
+         if(event === "chat.message") {
+           
+          
+         }
+       }
+    }) 
+
 
 
 
@@ -153,7 +169,7 @@ const Page = () => {
             ))}
            </div>
 
-           
+
 
            <div className="p-4 border-t border-zinc-800 bg-zinc-900/30">
             <div className="flex gap-4">
