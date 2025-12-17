@@ -154,7 +154,7 @@ const Page = () => {
                  <span className="text-xs text-zinc-500 uppercase">ROOM ID</span>
                  
                  <div className="flex items-center gap-2">
-                  <span className="font-bold text-red-500">{roomId}</span>
+                  <span className="font-bold text-red-500">{roomId.slice(0,10) + "..."}</span>
                    
                     <button onClick={copyLink} className="text-[10px] bg-zinc-800 hover:bg-zinc-700 px-2 py-0.5 rounded text-zinc-400 transition-colors">{copyStatus}</button>
 
@@ -182,7 +182,7 @@ const Page = () => {
 
             </div>
 
-            <button className="text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2  disabled:opacity-50">
+            <button  onClick={() => destroyRoom()}  className="text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2  disabled:opacity-50">
               <span className="group-hover:animate-pulse">💥</span>
                DESTORY NOW
               </button> 
@@ -191,6 +191,8 @@ const Page = () => {
 
 
     {/* messages  */}
+
+    
            <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
             {messages?.messages.length === 0 && (
               <div className="flex items-center justify-center h-full">
