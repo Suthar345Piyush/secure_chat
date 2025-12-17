@@ -4,24 +4,33 @@
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
-import { nanoid } from "nanoid";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useRouter , useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const ANIMALS = ["wolf" , "hawk" , "bear" , "shark"]
 
-const STORAGE_KEY = "chat-username"
-
-const generateUserName = () => {
-  const word = ANIMALS[Math.floor(Math.random() * ANIMALS.length)]
-  return `anonymous-${word}-${nanoid(5)}`
+const Page = () => {
+   return (
+      <Suspense>
+         <Home />
+      </Suspense>
+   )
 }
 
+export default Page;
 
 
-export default function Home() {
+
+ function Home() {
    const {username} = useUsername();
    const router = useRouter();  
+
+   const searchParams  = useSearchParams();
+
+   const wasDestroyed = searchParams.get("destroyed") === "true";
+
+   const error = searchParams.get("error");
+
+
 
 
 
@@ -39,6 +48,21 @@ export default function Home() {
   return (
      <main className="flex min-h-screen flex-col items-center justify-center p-4">
        <div className="w-full max-w-md space-y-8">
+
+        {wasDestroyed && (
+           <div className="bg-red-950/50 border border-red-900 p-4 text-center">
+             <p className="text-red-500 text-sm font-bold">Room Destroyed</p>
+             <p className="text-zinc-500 text-xs mt-1">All messages are deleted permanently</p>
+            </div>
+        )}
+
+        {error === "room-not-found" && (
+           <div className="bg-red-950/50 border-red-900 p-4 text-center">
+             <p className="text-red-500 text-sm font-bold">Room Full</p>
+             <p className="text-zinc-500 text-xs mt-1">Room reached it's max capacity</p>
+           </div>
+        )}
+
          <div className="text-center space-y-2">
            <h1 className="text-2xl font-bold tracking-tight text-red-500">secure_chat🔒</h1>
            <p className="text-sm text-zinc-500">A secure,self-distructing chat room.</p>
