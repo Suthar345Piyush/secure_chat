@@ -1,6 +1,6 @@
 // custom hook for the username  
 import { nanoid } from "nanoid";
-import { use, useEffect , useState } from "react";
+import { useEffect , useState } from "react";
 
 const ANIMALS = ["wolf" , "hawk" , "bear" , "shark"];
 const STORAGE_KEY = "chat-username";

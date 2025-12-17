@@ -5,11 +5,11 @@ import { client } from "@/lib/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 //Next js dynamic routes 
 
-import { useParams } from "next/navigation"
+import { useParams , useRouter } from "next/navigation"
 //date functions untility functions to work with dates 
 
 import {format} from "date-fns"   
-import { useRef, useState } from "react";
+import { useRef, useState , useEffect , use} from "react";
 
 import { useRealtime } from "@/lib/realtime-client";
 
@@ -25,18 +25,65 @@ function formatTimeRemaining(seconds : number) {
 const Page = () => {
    const params = useParams();
    const roomId = params.roomId as string;
+   const router = useRouter();
+
 
    const [copyStatus , setCopyStatus] = useState("COPY");
-   const [timeRemaining , setTimeRemaining] = useState<number | null>(210);
+   const [timeRemaining , setTimeRemaining] = useState<number | null>(null);
    const [input , setInput] = useState("");
    const {username} = useUsername();
+
+   // reference of the input  
+
+   const inputRef = useRef<HTMLInputElement>(null);
+
+
+   // ttl logic 
+
+   const {data : ttlData} = useQuery({
+     queryKey : ["ttl" , roomId],
+     queryFn : async () => {
+       const res = await client.room.ttl.get({query : {roomId}})
+
+       return res.data;
+     },
+   });
+
+
+   useEffect(() => {
+       if(ttlData?.ttl !== undefined) setTimeRemaining(ttlData.ttl);
+   } , [ttlData]);
+
+
+   useEffect(() => {
+     if(timeRemaining === null || timeRemaining < 0) return;
+
+     if(timeRemaining === 0) {
+       router.push("/?destroyed=true");
+       return;
+     }
+
+   // setting time interval 
+   const interval = setInterval(() => {
+     setTimeRemaining((prev) => {
+       if(prev === null || prev <= 1) {
+         clearInterval(interval);
+         return 0;
+       }
+       return prev - 1;
+     })
+   } , 1000);
+
+   return () => clearInterval(interval);
+
+   } , [timeRemaining , router]);
 
 
 
    // this query function , will run when component renders 
    // to extracting data , destructring the data on the top 
 
-    const {data : messages} =  useQuery({
+    const {data : messages , refetch} =  useQuery({
         queryKey : ["messages" , roomId],
         queryFn : async() => {
            const res = await client.messages.get({
@@ -49,10 +96,6 @@ const Page = () => {
 
    
 
-   // reference of the input  
-
-    const inputRef = useRef<HTMLInputElement>(null);
-
 
     // isPending from react query  
 
@@ -60,7 +103,9 @@ const Page = () => {
        mutationFn : async({text} : {
          text : string
        }) => {
-          await client.messages.post({sender : username , text} , {query : {roomId}})
+          await client.messages.post({sender : username , text} , {query : {roomId}});
+
+          setInput("");
        }
     });
 
@@ -69,11 +114,23 @@ const Page = () => {
        events : ["chat.message" , "chat.destroy"],
        onData : ({event}) => {
          if(event === "chat.message") {
-           
-          
+           refetch();
          }
+
+         if(event === "chat.destroy"){
+           router.push("/?destroyed=true");
+         }
+       },
+    });
+
+
+    const {mutate : destroyRoom} = useMutation({
+       mutationFn : async () => {
+         await client.room.delete(null , {query : {roomId}});
        }
-    }) 
+    });
+    
+    
 
 
 
