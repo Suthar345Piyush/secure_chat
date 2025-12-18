@@ -64,7 +64,7 @@ export default Page;
         )}
 
          <div className="text-center space-y-2">
-           <h1 className="text-2xl font-bold tracking-tight text-red-500">secure_chat🔒</h1>
+           <h1 className="text-2xl font-bold tracking-tight text-red-500">secure_chat🛡️</h1>
            <p className="text-sm text-zinc-500">A secure,self-distructing chat room.</p>
            
          </div>
@@ -83,12 +83,13 @@ export default Page;
              <button className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black transition-colors mt-2 cursor-pointer disabled:opacity-50" onClick={() => createRoom()}>
               CREATE SECURE ROOM
              </button>
-
            </div>
-           
          </div>
-
        </div>
+
+       
+
+
 
        
      </main>
