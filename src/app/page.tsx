@@ -65,38 +65,18 @@ export default Page;
 
        const reducedRoomId = roomId.trim().toLowerCase();
 
-       if(!/^[a-z0-9-]$/.test(reducedRoomId)) {
+       if(!/^[a-zA-Z0-9_-]$/.test(reducedRoomId)) {
          setJoinError("Invalid room Id format");
          return;
        }
 
 
-       setLoading(false);
+       setLoading(true);
        setJoinError("");
 
-       try{
+      router.push(`/room/${reducedRoomId}`);
 
-        const response = await fetch("/api/room/verify" , {
-           method : "POST",
-           headers : {"Content-Type" : 'application/json'},
-           body : JSON.stringify({roomId : reducedRoomId}),
-         });
-
-         const data = await response.json();
-
-         if(!response.ok){
-           setJoinError(data.error || 'Failed to join room');
-           setLoading(false);
-           return;
-         }
-
-
-         router.push(`/room/${reducedRoomId}`);
-
-       } catch(err) {
-          setJoinError('Error occured.Please try again');
-          setLoading(false);
-       }
+     
    };
 
 
@@ -113,16 +93,23 @@ export default Page;
             </div>
         )}
 
+        {error === "room-full" && (
+           <div className="bg-red-950/50 border-red-900 p-4 text-center">
+           <p className="text-red-500 text-sm font-bold">Room Full</p>
+           <p className="text-zinc-500 text-xs mt-1">Room reached it's max capacity</p>
+         </div>
+        )}
+
         {error === "room-not-found" && (
            <div className="bg-red-950/50 border-red-900 p-4 text-center">
-             <p className="text-red-500 text-sm font-bold">Room Full</p>
-             <p className="text-zinc-500 text-xs mt-1">Room reached it's max capacity</p>
+             <p className="text-red-500 text-sm font-bold">Room not found</p>
+             <p className="text-zinc-500 text-xs mt-1">The room may have expired or doesn't exist</p>
            </div>
         )}
 
          <div className="text-center space-y-2">
            <h1 className="text-2xl font-bold tracking-tight text-red-500">secure_chat🛡️</h1>
-           <p className="text-sm text-zinc-500">A secure,self-distructing chat room.</p>
+           <p className="text-sm text-zinc-500">A secure , self-distructing chat room.</p>
            
          </div>
          <div className="border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-md">
@@ -142,7 +129,7 @@ export default Page;
              </button>
            </div>
          </div>
-         <hr className="text-zinc-800"></hr>
+         <hr className="border-zinc-800"></hr>
 
 
          <div className="border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-md">
