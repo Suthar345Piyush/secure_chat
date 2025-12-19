@@ -9,7 +9,6 @@ import { Suspense , useState } from "react";
 
 
 
-
 const Page = () => {
    return (
       <Suspense>
@@ -19,7 +18,6 @@ const Page = () => {
 }
 
 export default Page;
-
 
 
  function Home() {
@@ -60,7 +58,6 @@ export default Page;
          return;
        }
 
-
        //reduced input (roomId)
 
        const reducedRoomId = roomId.trim().toLowerCase();
@@ -76,7 +73,6 @@ export default Page;
 
       router.push(`/room/${reducedRoomId}`);
 
-     
    };
 
 
@@ -93,6 +89,7 @@ export default Page;
             </div>
         )}
 
+
         {error === "room-full" && (
            <div className="bg-red-950/50 border-red-900 p-4 text-center">
            <p className="text-red-500 text-sm font-bold">Room Full</p>
@@ -100,12 +97,14 @@ export default Page;
          </div>
         )}
 
+
         {error === "room-not-found" && (
            <div className="bg-red-950/50 border-red-900 p-4 text-center">
              <p className="text-red-500 text-sm font-bold">Room not found</p>
              <p className="text-zinc-500 text-xs mt-1">The room may have expired or doesn't exist</p>
            </div>
         )}
+
 
          <div className="text-center space-y-2">
            <h1 className="text-2xl font-bold tracking-tight text-red-500">secure_chat🛡️</h1>
