@@ -5,7 +5,9 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter , useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense , useState } from "react";
+
+
 
 
 const Page = () => {
@@ -30,9 +32,11 @@ export default Page;
 
    const error = searchParams.get("error");
 
+   //join room states 
 
-
-
+   const [roomId , setRoomId] = useState("");
+   const [loading  , setLoading] = useState(false);
+   const [joinError , setJoinError] = useState("");
 
    const {mutate : createRoom} = useMutation({
       mutationFn : async () => {
@@ -43,6 +47,59 @@ export default Page;
          }
       }
    });
+
+
+   //handle join room function 
+
+   const handleJoinRoom = async () => {
+
+       // small validation at start 
+
+       if(!roomId.trim()){
+         setJoinError("Please enter a room ID");
+         return;
+       }
+
+
+       //reduced input (roomId)
+
+       const reducedRoomId = roomId.trim().toLowerCase();
+
+       if(!/^[a-z0-9-]$/.test(reducedRoomId)) {
+         setJoinError("Invalid room Id format");
+         return;
+       }
+
+
+       setLoading(false);
+       setJoinError("");
+
+       try{
+
+        const response = await fetch("/api/room/verify" , {
+           method : "POST",
+           headers : {"Content-Type" : 'application/json'},
+           body : JSON.stringify({roomId : reducedRoomId}),
+         });
+
+         const data = await response.json();
+
+         if(!response.ok){
+           setJoinError(data.error || 'Failed to join room');
+           setLoading(false);
+           return;
+         }
+
+
+         router.push(`/room/${reducedRoomId}`);
+
+       } catch(err) {
+          setJoinError('Error occured.Please try again');
+          setLoading(false);
+       }
+   };
+
+
 
 
   return (
@@ -94,16 +151,23 @@ export default Page;
                 <label className="flex items-center text-zinc-500">Join a Room</label>
                 <div className="flex items-center gap-3">
                  
-                       <input className="flex-1 bg-zinc-950 border border-zinc-800 p-3 text-sm text-zinc-400 font-mono " placeholder="Paste the roomId..."></input>
+                       <input type="text" value={roomId} onChange={(e) => setRoomId(e.target.value)}
+                       disabled={loading} onKeyUp={(e) => e.key === "Enter" && handleJoinRoom()} className="flex-1 bg-zinc-950 border border-zinc-800 p-3 text-sm text-zinc-400 font-mono " placeholder="Paste the roomId..." />
                 </div>
-           </div>
+             </div>
           </div>
 
-          <button className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black transition-colors mt-2 cursor-pointer">Join a Room</button>
-       </div>
-       </div>
+          <button  onClick={handleJoinRoom} disabled={loading} className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black transition-colors mt-2 cursor-pointer">{loading ? "Joining..." : "Join a Room"}</button>
 
-
+          {joinError && (
+              <div className="bg-red-950/50 border border-red-900 p-3 text-center">
+                <p className="text-red-500 text-xs">{joinError}</p>
+              </div>
+          )}
+         </div>
+       </div>
      </main>
   );
 }
+
+
