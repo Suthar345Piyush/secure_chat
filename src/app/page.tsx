@@ -104,19 +104,6 @@ export default Page;
        </div>
 
 
-
-
-    
-
-
-
-     
-    
-     
-
-
-
-       
      </main>
   );
 }
