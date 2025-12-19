@@ -85,9 +85,34 @@ export default Page;
              </button>
            </div>
          </div>
+         <hr className="text-zinc-800"></hr>
+
+
+         <div className="border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-md">
+           <div className="space-y-5 pb-5">
+             <div className="space-y-2">
+                <label className="flex items-center text-zinc-500">Join a Room</label>
+                <div className="flex items-center gap-3">
+                 
+                       <input className="flex-1 bg-zinc-950 border border-zinc-800 p-3 text-sm text-zinc-400 font-mono " placeholder="Paste the roomId..."></input>
+                </div>
+           </div>
+          </div>
+
+          <button className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black transition-colors mt-2 cursor-pointer">Join a Room</button>
+       </div>
        </div>
 
-       
+
+
+
+    
+
+
+
+     
+    
+     
 
 
 
