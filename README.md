@@ -9,3 +9,4 @@ Tech-Stack:
 5. Zod - For schema validation of typescript.
 6. NanoId - For generating random roomId's.
 7. Date-fns - For formating the timestamps for generated room.
+8. TailwindCSS - For styling the app.
