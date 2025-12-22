@@ -60,10 +60,20 @@ export default Page;
 
        //reduced input (roomId)
 
-       const reducedRoomId = roomId.trim().toLowerCase();
+       let reducedRoomId = roomId.trim();
 
-       if(!/^[a-zA-Z0-9_-]$/.test(reducedRoomId)) {
-         setJoinError("Invalid room Id format");
+       // if user paste the whole url , it extract the room id from it  
+       
+       const urlMatch = reducedRoomId.match(/\/room\/([^/?]+)/);
+
+       if(urlMatch) {
+         reducedRoomId = urlMatch[1];
+       }
+
+       //for nanoid generates 
+
+       if(!reducedRoomId || /\s/.test(reducedRoomId)) {
+         setJoinError("Invalid room id format");
          return;
        }
 
