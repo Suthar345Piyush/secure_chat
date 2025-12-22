@@ -38,6 +38,8 @@ export default Page;
 
    //clearing the room destroyed notification 
 
+
+   
    useEffect(() => {
      if(wasDestroyed || error) {
         const timer = setTimeout(() => {
