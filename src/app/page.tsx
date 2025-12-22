@@ -5,7 +5,7 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter , useSearchParams } from "next/navigation";
-import { Suspense , useState } from "react";
+import { Suspense , useEffect, useState } from "react";
 
 
 
@@ -35,6 +35,21 @@ export default Page;
    const [roomId , setRoomId] = useState("");
    const [loading  , setLoading] = useState(false);
    const [joinError , setJoinError] = useState("");
+
+   //clearing the room destroyed notification 
+
+
+   
+   useEffect(() => {
+     if(wasDestroyed || error) {
+        const timer = setTimeout(() => {
+           router.replace('/' , {scroll : false});
+        } , 2000);
+
+        return () => clearTimeout(timer);
+     }
+   } , [wasDestroyed , error , router]);
+
 
    const {mutate : createRoom} = useMutation({
       mutationFn : async () => {
