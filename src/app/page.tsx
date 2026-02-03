@@ -55,6 +55,8 @@ export default Page;
       mutationFn : async () => {
          const res = await client.room.create.post();
 
+          // server responding 500 status - TODO solve it 
+          
          if(res.status === 200) {
            router.push(`/room/${res.data?.roomId}`)
          }
